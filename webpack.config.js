@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
 	// Fichier d'entrée
-	entry: './js/index.js',
+	entry: './containers/index.js',
 	// Fichier de sortie
 	output: {
 		path: path.resolve(__dirname, '../site/web/js'),
@@ -22,5 +22,8 @@ module.exports = {
 			}
 		]
 	},
-	devtool: 'source-map'
+	devtool: 'source-map',
+	externals: {
+		'config': 'config'
+	}
 }
