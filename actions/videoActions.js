@@ -1,17 +1,24 @@
-import actionTypes from '../actions/actionTypes';
 import VideosApi from '../api/VideosApi';
 
-export function detailMovement(howMuch) {
-    return (dispatch, getState) => {
-        dispatch({type: actionTypes.MOVE_VIDEOS, howMuch});
-    }
+export const LOAD_VIDEOS_PROGRESS = 'LOAD_VIDEOS_PROGRESS'
+export const LOAD_VIDEOS_SUCCESS = 'LOAD_VIDEOS_SUCCESS'
+export const PREV_VIDEO = 'PREV_VIDEO'
+export const NEXT_VIDEO = 'NEXT_VIDEO'
+
+
+export function prevVideo() {
+    return {type: PREV_VIDEO};
+}
+
+export function nextVideo() {
+    return {type: NEXT_VIDEO};
 }
 
 export function fetchVideos() {
     return (dispatch, getState)  => {
-        dispatch({type: actionTypes.LOAD_VIDEOS_PROGRESS});
+        dispatch({type: LOAD_VIDEOS_PROGRESS});
         VideosApi.getAllVideos().then(response => {
-            dispatch({type: actionTypes.LOAD_VIDEOS_SUCCESS, videos: response.body})
+            dispatch({type: LOAD_VIDEOS_SUCCESS, videoList: response.body})
         });
     }
 }

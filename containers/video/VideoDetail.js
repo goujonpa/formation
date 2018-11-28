@@ -1,7 +1,11 @@
 import React from 'react';
-import {detailMovement} from '../../actions/videoActions';
 import {connect} from 'react-redux';
-
+import {
+	nextVideo,
+	prevVideo
+} from '../../actions/videoActions';
+import {bindActionCreators} from 'redux';
+import MDSpinner from "react-md-spinner";
 
 class VideoDetail extends React.Component {
 
@@ -13,44 +17,53 @@ class VideoDetail extends React.Component {
 	}
 
 	onClickNext() {
-		detailMovement(1);
+		this.props.nextVideo();
 	}
 
 	onClickPrev() {
-		detailMovement(-1);
+		this.props.prevVideo();
 	}
 
-	render() {
-		const {videos, currentId} = this.props;
-		const currentVideo = videos.filter(video => {
-				return video.id == currentId
-		})[0];
-
-		console.log(videos);
-
+	_renderVideo() {
+		const {videos, currentVideoId, loadingVideos} = this.props;
+		const currentVideo = videos[currentVideoId];
 		
+		if (loadingVideos) {
+			return (
+				<div className="caption">
+					<p><MDSpinner size={100} singleColor="#009688"/></p>
+				</div>
+			);
+		}
+
 		if (!videos || !currentVideo) return null;
 
+		return (
+			<div className="caption">
+				<video
+					style={{ width: '100%', backgroundColor: 'black' }}
+					height="300"
+					controls
+					src={
+						currentVideo &&
+						'./uploads/' + currentVideo.file
+					}
+				>
+				</video>
+				<button onClick={this.onClickPrev}>PREVIOUS</button>
+				<button onClick={this.onClickNext}>NEXT</button>
+				<h3>{currentVideo && currentVideo.title}</h3>
+				<p>{currentVideo && currentVideo.description}</p>
+			</div>
+		);
+}
+
+	render() {
 		return (
 			<div className="row marketing">
 				<div className="col-sm-12 col-md-12">
 					<div className="video-detail">
-						<div className="caption">
-							<video
-								style={{ width: '100%', backgroundColor: 'black' }}
-								height="300"
-								controls
-								src={
-									currentVideo &&
-									'./uploads/' + currentVideo.file
-								}
-							>
-							</video>
-							<button onClick={this.onClickPrev}>PREVIOUS</button>
-							<button onClick={this.onClickNext}>NEXT</button>
-							<h3>{currentVideo && currentVideo.title}</h3>
-							<p>{currentVideo && currentVideo.description}</p>
-						</div>
+						{this._renderVideo()}
 					</div>
 				</div>
 			</div>
@@ -58,15 +71,19 @@ class VideoDetail extends React.Component {
 	}
 }
 
-VideoDetail.defaultProps = {
-	initId: 1
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		nextVideo,
+		prevVideo
+	}, dispatch)
 }
 
 function mapStateToProps(state) {
 	return {
-		videos: state.videos,
-		currentId: state.currentVideoId
+		videos: state.videos.videoList,
+		currentVideoId: state.videos.currentVideoId,
+		loadingVideos: state.videos.loadingVideos
 	}
 }
 
-export default connect(mapStateToProps)(VideoDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(VideoDetail);

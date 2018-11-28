@@ -1,6 +1,0 @@
-const actionTypes = {
-    LOAD_VIDEOS_PROGRESS: 'LOAD_VIDEOS_PROGRESS',
-    LOAD_VIDEOS_SUCCESS: 'LOAD_VIDEOS_SUCCESS',
-    MOVE_VIDEOS: 'MOVE_VIDEOS'
-};
-export default actionTypes;

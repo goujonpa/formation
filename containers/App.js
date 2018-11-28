@@ -3,8 +3,8 @@ import {connect} from 'react-redux';
 import VideoDetail from './video/VideoDetail';
 import VideoList from './video/VideoList';
 import VideoForm from './video/VideoForm';
-import actionTypes from '../actions/actionTypes';
 import {fetchVideos} from '../actions/videoActions';
+import {bindActionCreators} from 'redux';
 
 
 class App extends Component {
@@ -13,28 +13,26 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		const action = {
-			type: actionTypes.LOAD_VIDEOS_SUCCESS,
-			videos: [
-			]
-		}		
-		this.props.dispatch(fetchVideos());
+		this.props.fetchVideos();
 	}
 
     render() {
         const {videos} = this.props;
         return [
-			<VideoDetail key="detail" videos={videos} />,
-			<VideoForm key="form" onSubmitSuccess={this._fetchAllVideos} />,
-            <VideoList key="list" videos={videos} />
+			<VideoDetail key="detail" />,
+			<VideoForm key="form" />,
+            <VideoList key="list" />
         ];
     }
 }
 
 function mapStateToProps(state) {
 	return {
-		videos: state.videos
+		videos: state.videos.VideoList
 	}
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({fetchVideos}, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
