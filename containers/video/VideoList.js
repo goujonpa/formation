@@ -2,11 +2,17 @@ import React from 'react';
 import VideoItem from '../../components/video/VideoItem';
 import {connect} from 'react-redux';
 import MDSpinner from "react-md-spinner";
+import {fetchVideos} from '../../actions/videoActions';
+import {bindActionCreators} from 'redux';
 
 class VideoList extends React.Component {
 
 	constructor(props){
 		super(props);
+	}
+
+	componentDidMount() {
+		this.props.fetchVideos();
 	}
 
 	_renderList() {
@@ -49,4 +55,8 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps)(VideoList);
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({fetchVideos}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoList);

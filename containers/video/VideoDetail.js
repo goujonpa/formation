@@ -1,33 +1,28 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {
-	nextVideo,
-	prevVideo
+	fetchVideos,
+	setCurrentVideo
 } from '../../actions/videoActions';
 import {bindActionCreators} from 'redux';
 import MDSpinner from "react-md-spinner";
 
 class VideoDetail extends React.Component {
-
 	constructor(props) {
 		super(props);
-
-		this.onClickNext = this.onClickNext.bind(this);
-		this.onClickPrev = this.onClickPrev.bind(this);
 	}
 
-	onClickNext() {
-		this.props.nextVideo();
-	}
-
-	onClickPrev() {
-		this.props.prevVideo();
+	componentDidMount() {
+		const {id} = this.props.match.params;
+		this.props.fetchVideos();
+		this.props.setCurrentVideo(id);
 	}
 
 	_renderVideo() {
 		const {videos, currentVideoId, loadingVideos} = this.props;
-		const currentVideo = videos[currentVideoId];
-		
+		const currentVideo = videos.filter(video => (
+			Number(video.id) === Number(currentVideoId)
+		))[0];
 		if (loadingVideos) {
 			return (
 				<div className="caption">
@@ -46,12 +41,10 @@ class VideoDetail extends React.Component {
 					controls
 					src={
 						currentVideo &&
-						'./uploads/' + currentVideo.file
+						`/site/web/uploads/${currentVideo.file}`
 					}
 				>
 				</video>
-				<button onClick={this.onClickPrev}>PREVIOUS</button>
-				<button onClick={this.onClickNext}>NEXT</button>
 				<h3>{currentVideo && currentVideo.title}</h3>
 				<p>{currentVideo && currentVideo.description}</p>
 			</div>
@@ -73,8 +66,8 @@ class VideoDetail extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 	return bindActionCreators({
-		nextVideo,
-		prevVideo
+		fetchVideos,
+		setCurrentVideo
 	}, dispatch)
 }
 

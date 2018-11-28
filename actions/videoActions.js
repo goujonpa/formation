@@ -4,7 +4,11 @@ export const LOAD_VIDEOS_PROGRESS = 'LOAD_VIDEOS_PROGRESS'
 export const LOAD_VIDEOS_SUCCESS = 'LOAD_VIDEOS_SUCCESS'
 export const PREV_VIDEO = 'PREV_VIDEO'
 export const NEXT_VIDEO = 'NEXT_VIDEO'
+export const SET_CURRENT_VIDEO = 'SET_CURRENT_VIDEO'
 
+export function setCurrentVideo(id) {
+    return {type: SET_CURRENT_VIDEO, id}
+}
 
 export function prevVideo() {
     return {type: PREV_VIDEO};

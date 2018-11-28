@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 
 const VideoItem = props => (
     <li  className="media">
         <div className="media-left">
-        <img className="media-object"
-            alt="cat" src={'./uploads/thumbnails/' + props.video.thumbnail}
-            width="246"
-            height="138" />
+            <Link to={`/videos/${props.video.id}`} >
+                <img className="media-object"
+                        alt="cat" src={'./uploads/thumbnails/' + props.video.thumbnail}
+                        width="246"
+                        height="138" />
+            </Link>
         </div>
         <div className="media-body">
             <h4 className="media-heading">{props.video.title}</h4>
