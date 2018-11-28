@@ -1,4 +1,4 @@
-import {applyMiddleWare, createStore, compose} from 'redux';
+import {applyMiddleware, createStore, compose} from 'redux';
 import thunk from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 import {routerMiddleware} from 'connected-react-router';
@@ -10,7 +10,7 @@ export default browserHistory => {
     const store = createStore(
         createRootReducer(browserHistory),
         composeEnhancers(
-            applyMiddleWare(
+            applyMiddleware(
                 thunk,
                 logger,
                 routerMiddleware(browserHistory)
