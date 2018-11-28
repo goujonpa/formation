@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {createStore, compose, applyMiddleware} from 'redux';
+import configureStore from '../store';
 import {Provider} from 'react-redux';
-import reducer from '../reducers/index';
-import thunk from 'redux-thunk';
-import {createLogger} from 'redux-logger';
+import {createBrowserHistory} from 'history';
+import {ConnectedRouter} from 'connected-react-router';
 
-const logger = createLogger();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk, logger)));
+const browserHistory = createBrowserHistory({basename: '/site/web'});
+const store = configureStore(browserHistory);
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <ConnectedRouter history={browserHistory}>
+            <App />
+        </ConnectedRouter>
     </Provider>,
     document.querySelector('#appContainer')
 );
