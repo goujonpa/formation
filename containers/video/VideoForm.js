@@ -1,49 +1,38 @@
 import React from 'react';
-import VideosApi from '../../api/VideosApi';
+import {addVideo, updateForm} from '../../actions/videoActions';
+import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class VideoForm extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-            title: '',
-            description: '',
-            file: ''
-        }
+
         this._handleSubmit = this._handleSubmit.bind(this);
-        this._handleTitleChange = this._handleTitleChange.bind(this);
-        this._handleDescriptionChange = this._handleDescriptionChange.bind(this);
-        this._handleFileChange = this._handleFileChange.bind(this);
+        this._handleChange = this._handleChange.bind(this);
     }
     
     _handleSubmit(event) {
         event.preventDefault();
-        const {title, description, file} = this.state;
-        VideosApi.createVideo(title, description, file)
-            .then(response => {
-                this.props.onSubmitSuccess();
-                this.setState({
-                    title: '',
-                    description: '',
-                    file: ''        
-                });
-            });
+        const {title, description, file} = this.props;
+        this.props.addVideo(title, description, file);
     }
 
-    _handleFileChange(event) {
-        this.setState({file: event.target.files[0]});
-    }
-
-    _handleDescriptionChange(event) {
-        this.setState({description: event.target.value});
-    }
-
-    _handleTitleChange(event) {
-        this.setState({title: event.target.value});
+    _handleChange() {
+        const {name} = event.target;
+        console.log('BJR')
+        switch (name) {
+            case 'file':
+                this.props.updateForm(name, event.target.files[0]);
+                break;
+            default:
+                this.props.updateForm(name, event.target.value);
+        }
     }
 
 	render() {
-		const {title, description, file} = this.state;
+        const {title, description, file, adding} = this.props;
+        const btnClass = adding ? 'btn btn-success' : 'btn';
 
 		return (
 			<div className="row marketing">
@@ -55,7 +44,7 @@ class VideoForm extends React.Component {
                                 <input 
                                     type="text" 
                                     className="form-control"
-                                    onChange={this._handleTitleChange} 
+                                    onChange={this._handleChange} 
                                     value={title}
                                     name='title' />
                             </div>
@@ -63,7 +52,7 @@ class VideoForm extends React.Component {
                                 <label htmlFor="title">Description</label>
                                 <textarea 
                                     className="form-control"
-                                    onChange={this._handleDescriptionChange} 
+                                    onChange={this._handleChange} 
                                     name="description" 
                                     value={description}>
                                 </textarea>
@@ -72,12 +61,14 @@ class VideoForm extends React.Component {
                                 <label htmlFor="title">File</label>
                                 <input 
                                     className="form-control"
-                                    onChange={this._handleFileChange}
+                                    onChange={this._handleChange}
                                     type="file" 
                                     name="file" 
                                     />
                             </div>
-                            <button type="submit">SUBMIT</button>
+                            <button className={btnClass} type="submit" disabled={adding}>
+                                {adding ? 'Submitted...' : 'Submit'}
+                            </button>
                         </form>
 					</div>
 				</div>
@@ -86,8 +77,21 @@ class VideoForm extends React.Component {
 	}
 }
 
-VideoForm.defaultProps = {
-	initId: 1
+function mapStateToProps(state) {
+    return {
+        title: state.videos.addingForm.title,
+        description: state.videos.addingForm.description,
+        file: state.videos.addingForm.file,
+        adding: state.videos.addingVideo
+    };
 }
 
-export default VideoForm;
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        updateForm,
+        addVideo
+    }, dispatch)
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoForm);
